@@ -1,0 +1,72 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Room {{ room.room_number }} — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">{{ room.category.name }}</p>
+        <h1>Room {{ room.room_number }}</h1>
+        <div class="gold-divider"></div>
+    </div>
+</div>
+<section style="padding:4rem 0;">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                {% if room.image %}
+                    <img src="{{ room.image.url }}" class="img-fluid w-100" style="height:420px;object-fit:cover;" alt="Room {{ room.room_number }}">
+                {% else %}
+                    <div class="room-img-placeholder" style="height:420px;"><i class="bi bi-building" style="font-size:5rem;"></i></div>
+                {% endif %}
+                <div style="background:var(--cream);padding:2rem;margin-top:2rem;">
+                    <h4 style="font-size:1.5rem;">About This Room</h4>
+                    <div class="gold-divider"></div>
+                    <p style="margin-top:1rem;color:var(--text-muted);line-height:1.8;">{{ room.description|default:"A beautifully appointed room offering the finest in luxury accommodations." }}</p>
+                    {% if room.amenities %}
+                    <h5 style="margin-top:1.5rem;font-size:1.1rem;">Amenities</h5>
+                    <div class="row mt-2">
+                        {% for amenity in room.get_amenities_list %}
+                        <div class="col-6 mb-2"><i class="bi bi-check-circle me-2" style="color:var(--gold);"></i><span style="font-size:0.82rem;">{{ amenity }}</span></div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div style="border:1px solid #EDE8E0;padding:2rem;position:sticky;top:2rem;">
+                    <div style="border-bottom:1px solid #EDE8E0;padding-bottom:1.5rem;margin-bottom:1.5rem;">
+                        <p class="category-badge">{{ room.category.name }}</p>
+                        <h3 style="font-size:2.5rem;">UGX {{ room.price_per_night|floatformat:0 }}<span style="font-size:0.9rem;color:var(--text-muted);font-family:'Montserrat',sans-serif;">/night</span></h3>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #F0EBE3;">
+                            <span style="font-size:0.8rem;color:var(--text-muted);">Floor</span>
+                            <span style="font-size:0.85rem;font-weight:600;">{{ room.floor }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-2" style="border-bottom:1px solid #F0EBE3;">
+                            <span style="font-size:0.8rem;color:var(--text-muted);">Max Occupancy</span>
+                            <span style="font-size:0.85rem;font-weight:600;">{{ room.category.max_occupancy }} Guests</span>
+                        </div>
+                        <div class="d-flex justify-content-between py-2">
+                            <span style="font-size:0.8rem;color:var(--text-muted);">Status</span>
+                            <span style="font-size:0.85rem;font-weight:600;color:{% if room.is_available %}#198754{% else %}#dc3545{% endif %};">
+                                {% if room.is_available %}Available{% else %}Unavailable{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    {% if room.is_available %}
+                        {% if user.is_authenticated and not user.is_staff %}
+                            <a href="{% url 'book_room' room.pk %}" class="btn btn-gold w-100 py-2">Book This Room</a>
+                        {% elif not user.is_authenticated %}
+                            <a href="{% url 'login' %}?next={% url 'book_room' room.pk %}" class="btn btn-gold w-100 py-2">Login to Book</a>
+                            <a href="{% url 'register' %}" class="btn btn-outline-gold w-100 mt-2 py-2">Create Account</a>
+                        {% endif %}
+                    {% else %}
+                        <button class="btn btn-secondary w-100 py-2" disabled>Not Available</button>
+                    {% endif %}
+                    <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:1rem;"><i class="bi bi-shield-check me-1" style="color:var(--gold);"></i>Free cancellation available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

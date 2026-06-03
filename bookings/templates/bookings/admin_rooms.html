@@ -1,0 +1,45 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Manage Rooms — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><p class="section-subtitle">Administration</p><h1>Room Management</h1><div class="gold-divider"></div></div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div style="background:white;overflow:hidden;">
+            <table class="table tales-table mb-0">
+                <thead><tr><th>Room No.</th><th>Category</th><th>Floor</th><th>Price/Night</th><th>Max Guests</th><th>Status</th><th>Toggle</th></tr></thead>
+                <tbody>
+                    {% for room in rooms %}
+                    <tr>
+                        <td><strong>{{ room.room_number }}</strong></td>
+                        <td>{{ room.category.name }}</td>
+                        <td>{{ room.floor }}</td>
+                        <td>UGX {{ room.price_per_night|floatformat:0 }}</td>
+                        <td>{{ room.category.max_occupancy }}</td>
+                        <td>
+                            {% if room.is_available %}
+                                <span class="badge" style="background:#D1E7DD;color:#0A3622;">Available</span>
+                            {% else %}
+                                <span class="badge" style="background:#F8D7DA;color:#58151C;">Unavailable</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'admin_toggle_room' room.pk %}" class="btn btn-sm {% if room.is_available %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
+                                {% if room.is_available %}Mark Unavailable{% else %}Mark Available{% endif %}
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center py-5 text-muted">No rooms configured. Add rooms via <a href="/admin/">Django Admin</a>.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3 d-flex gap-2">
+            <a href="/admin/bookings/room/add/" class="btn btn-gold btn-sm"><i class="bi bi-plus-circle me-2"></i>Add Room</a>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-gold btn-sm">← Back to Dashboard</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

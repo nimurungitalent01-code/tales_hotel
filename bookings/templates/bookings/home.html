@@ -1,0 +1,146 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Tales Hotel — Where Luxury Meets Comfort{% endblock %}
+{% block content %}
+
+<!-- HERO -->
+<section style="background:linear-gradient(135deg, #1A1208 0%, #2C2416 50%, #1A1208 100%); min-height:88vh; display:flex; align-items:center; position:relative; overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23C9A84C\' fill-opacity=\'0.04\'%3E%3Cpath d=\'M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10z\'/%3E%3C/g%3E%3C/svg%3E') repeat;"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <p style="color:var(--gold);font-size:0.75rem;letter-spacing:5px;text-transform:uppercase;font-weight:600;">Welcome to</p>
+                <h1 style="font-family:'Cormorant Garamond',serif;font-size:5rem;color:#F8F4ED;font-weight:300;line-height:1.1;">TALES<br><em style="color:var(--gold);">HOTEL</em></h1>
+                <div style="width:60px;height:2px;background:var(--gold);margin:1.5rem 0;"></div>
+                <p style="color:#C4B89A;font-size:1.1rem;font-family:'Cormorant Garamond',serif;font-style:italic;max-width:480px;line-height:1.7;">Where luxury meets comfort. Every room tells a story. Every stay creates a memory.</p>
+                <div class="mt-4 d-flex gap-3 flex-wrap">
+                    <a href="{% url 'room_list' %}" class="btn btn-gold px-4 py-2">Explore Rooms</a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-gold px-4 py-2">Book Now</a>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5 mt-lg-0">
+                <div style="border:1px solid rgba(201,168,76,0.3);padding:2rem;background:rgba(255,255,255,0.04);">
+                    <p style="color:var(--gold);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:1.5rem;">Quick Search</p>
+                    <form method="get" action="{% url 'room_list' %}">
+                        <div class="mb-3">
+                            <label class="form-label text-warning" style="font-size:0.65rem;">Check-in Date</label>
+                            {{ search_form.check_in_date }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning" style="font-size:0.65rem;">Check-out Date</label>
+                            {{ search_form.check_out_date }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning" style="font-size:0.65rem;">Guests</label>
+                            {{ search_form.num_guests }}
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">Search Availability</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES BAR -->
+<section style="background:var(--gold);padding:1.2rem 0;">
+    <div class="container">
+        <div class="row text-center">
+            
+            <div class="col"><i class="bi bi-shield-check me-2" style="color:var(--dark);"></i><span style="font-size:0.75rem;font-weight:600;color:var(--dark);letter-spacing:1px;">SECURE BOOKING</span></div>
+            <div class="col"><i class="bi bi-wifi me-2" style="color:var(--dark);"></i><span style="font-size:0.75rem;font-weight:600;color:var(--dark);letter-spacing:1px;">FREE WIFI</span></div>
+            <div class="col"><i class="bi bi-cup-hot me-2" style="color:var(--dark);"></i><span style="font-size:0.75rem;font-weight:600;color:var(--dark);letter-spacing:1px;">BREAKFAST</span></div>
+            <div class="col"><i class="bi bi-car-front me-2" style="color:var(--dark);"></i><span style="font-size:0.75rem;font-weight:600;color:var(--dark);letter-spacing:1px;">FREE PARKING</span></div>
+            <div class="col"><i class="bi bi-star me-2" style="color:var(--dark);"></i><span style="font-size:0.75rem;font-weight:600;color:var(--dark);letter-spacing:1px;">5-STAR SERVICE</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED ROOMS -->
+<section style="padding:5rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="text-center mb-5">
+            <p class="section-subtitle">Our Accommodations</p>
+            <h2 class="section-title mt-2">Featured Rooms & Suites</h2>
+            <div class="gold-divider center"></div>
+        </div>
+        <div class="row g-4">
+            {% for room in featured_rooms %}
+            <div class="col-lg-4 col-md-6">
+                <div class="room-card card h-100 shadow-sm">
+                    {% if room.image %}
+                        <img src="{{ room.image.url }}" class="card-img-top" alt="{{ room.room_number }}">
+                    {% else %}
+                        <div class="room-img-placeholder"><i class="bi bi-building"></i></div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <p class="category-badge">{{ room.category.name }}</p>
+                        <h5 class="mt-1" style="font-size:1.3rem;">Room {{ room.room_number }}</h5>
+                        <p style="font-size:0.82rem;color:var(--text-muted);flex-grow:1;">{{ room.description|truncatechars:90 }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="price">UGX {{ room.price_per_night|floatformat:0 }}<span>/night</span></div>
+                            <a href="{% url 'room_detail' room.pk %}" class="btn btn-gold btn-sm">View Room</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center"><p class="text-muted">No rooms available at the moment.</p></div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'room_list' %}" class="btn btn-outline-gold px-5">View All Rooms</a>
+        </div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section style="padding:5rem 0;background:var(--dark);position:relative;overflow:hidden;">
+    <div class="container position-relative">
+        <div class="text-center mb-5">
+            <p class="section-subtitle">Why Choose Us</p>
+            <h2 class="section-title mt-2" style="color:var(--cream);">The Tales Experience</h2>
+            <div class="gold-divider center"></div>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-lg-3 col-sm-6">
+                <div style="padding:2rem;border:1px solid rgba(201,168,76,0.2);height:100%;">
+                    <i class="bi bi-award" style="font-size:2.5rem;color:var(--gold);"></i>
+                    <h5 style="color:var(--cream);margin-top:1rem;">Luxury Redefined</h5>
+                    <p style="color:#7A6E5F;font-size:0.82rem;margin-top:0.5rem;">Experience world-class luxury in every corner of our hotel, from plush bedding to curated artworks.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div style="padding:2rem;border:1px solid rgba(201,168,76,0.2);height:100%;">
+                    <i class="bi bi-heart" style="font-size:2.5rem;color:var(--gold);"></i>
+                    <h5 style="color:var(--cream);margin-top:1rem;">Personalized Care</h5>
+                    <p style="color:#7A6E5F;font-size:0.82rem;margin-top:0.5rem;">Our dedicated team ensures every guest feels at home with bespoke service tailored to your needs.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div style="padding:2rem;border:1px solid rgba(201,168,76,0.2);height:100%;">
+                    <i class="bi bi-geo-alt" style="font-size:2.5rem;color:var(--gold);"></i>
+                    <h5 style="color:var(--cream);margin-top:1rem;">Prime Location</h5>
+                    <p style="color:#7A6E5F;font-size:0.82rem;margin-top:0.5rem;">Situated in the heart of the city, steps away from top restaurants, shopping and entertainment.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div style="padding:2rem;border:1px solid rgba(201,168,76,0.2);height:100%;">
+                    <i class="bi bi-clock-history" style="font-size:2.5rem;color:var(--gold);"></i>
+                    <h5 style="color:var(--cream);margin-top:1rem;">24/7 Concierge</h5>
+                    <p style="color:#7A6E5F;font-size:0.82rem;margin-top:0.5rem;">Our concierge team is available round the clock to assist with any request, big or small.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:4rem 0;background:var(--cream);">
+    <div class="container text-center">
+        <h2 class="section-title">Ready to Begin Your Story?</h2>
+        <p style="color:var(--text-muted);margin:1rem 0 2rem;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;">Join hundreds of satisfied guests who have chosen Tales Hotel for an unforgettable experience.</p>
+        <a href="{% url 'register' %}" class="btn btn-gold px-5 py-2 me-3">Create Account</a>
+        <a href="{% url 'contact' %}" class="btn btn-outline-gold px-5 py-2">Get in Touch</a>
+    </div>
+</section>
+{% endblock %}

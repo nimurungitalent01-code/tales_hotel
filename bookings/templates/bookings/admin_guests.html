@@ -1,0 +1,33 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Manage Guests — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><p class="section-subtitle">Administration</p><h1>Guest Directory</h1><div class="gold-divider"></div></div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div style="background:white;overflow:hidden;">
+            <table class="table tales-table mb-0">
+                <thead><tr><th>#</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>National ID</th><th>Registered</th><th>Actions</th></tr></thead>
+                <tbody>
+                    {% for g in guests %}
+                    <tr>
+                        <td>{{ g.pk }}</td>
+                        <td>{{ g.user.get_full_name }}</td>
+                        <td>{{ g.user.username }}</td>
+                        <td>{{ g.user.email }}</td>
+                        <td>{{ g.phone_number }}</td>
+                        <td>{{ g.national_id }}</td>
+                        <td>{{ g.created_at|date:"M d, Y" }}</td>
+                        <td><a href="{% url 'admin_guest_detail' g.pk %}" class="btn btn-sm btn-outline-gold">View Profile</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-5 text-muted">No registered guests.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-gold mt-3">← Back to Dashboard</a>
+    </div>
+</section>
+{% endblock %}
