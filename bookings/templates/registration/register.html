@@ -1,0 +1,70 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Register — Tales Hotel{% endblock %}
+{% block content %}
+<section style="background:var(--cream);padding:4rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div style="background:white;padding:3rem;border-top:4px solid var(--gold);box-shadow:0 10px 40px rgba(0,0,0,0.08);">
+                    <div class="text-center mb-4">
+                        <p style="color:var(--gold);font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;">Join Tales Hotel</p>
+                        <h2 style="font-size:2.2rem;">Create Your Account</h2>
+                        <div class="gold-divider center"></div>
+                    </div>
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.first_name.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.email.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Username</label>
+                                {{ form.username }}
+                                {% if form.username.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.username.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                {{ form.phone_number }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">National ID / Passport</label>
+                                {{ form.national_id }}
+                                {% if form.national_id.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.national_id.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Date of Birth (Optional)</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Password</label>
+                                {{ form.password1 }}
+                                {% if form.password1.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.password1.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Confirm Password</label>
+                                {{ form.password2 }}
+                                {% if form.password2.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ form.password2.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div class="col-12 mt-2">
+                                <button type="submit" class="btn btn-gold w-100 py-2">Create Account</button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3" style="font-size:0.82rem;color:var(--text-muted);">Already have an account? <a href="{% url 'login' %}" style="color:var(--gold);font-weight:600;">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

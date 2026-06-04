@@ -1,0 +1,58 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Booking #{{ booking.pk }} — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Booking Reference</p>
+        <h1>#{{ booking.pk }}</h1>
+        <div class="gold-divider"></div>
+    </div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-7">
+                <div style="background:white;padding:2rem;border-top:3px solid var(--gold);">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h4>Booking Details</h4>
+                        <span class="badge badge-{{ booking.status }} px-3 py-2">{{ booking.get_status_display }}</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Room</small><strong>{{ booking.room.room_number }} — {{ booking.room.category.name }}</strong></div>
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Floor</small><strong>{{ booking.room.floor }}</strong></div>
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Check-in</small><strong>{{ booking.check_in_date }}</strong></div>
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Check-out</small><strong>{{ booking.check_out_date }}</strong></div>
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Nights</small><strong>{{ booking.get_num_nights }}</strong></div>
+                        <div class="col-6"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Guests</small><strong>{{ booking.num_guests }}</strong></div>
+                        {% if booking.special_requests %}
+                        <div class="col-12"><small class="text-muted d-block" style="font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;">Special Requests</small><p>{{ booking.special_requests }}</p></div>
+                        {% endif %}
+                        <div class="col-12"><hr><div class="d-flex justify-content-between"><span style="font-size:1.1rem;">Total Amount</span><strong style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;">UGX {{ booking.total_amount|floatformat:0 }}</strong></div></div>
+                    </div>
+                    {% if booking.payment %}
+                    <div style="background:var(--cream);padding:1rem;margin-top:1rem;">
+                        <h6>Payment Information</h6>
+                        <div class="row">
+                            <div class="col-6"><small class="text-muted">Method:</small> {{ booking.payment.get_payment_method_display }}</div>
+                            <div class="col-6"><small class="text-muted">Status:</small> <span class="badge badge-{{ booking.payment.payment_status }}">{{ booking.payment.get_payment_status_display }}</span></div>
+                            {% if booking.payment.transaction_ref %}<div class="col-12 mt-1"><small class="text-muted">Ref:</small> {{ booking.payment.transaction_ref }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="mt-4 d-flex gap-2 flex-wrap">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-gold btn-sm">Back to Dashboard</a>
+                        {% if booking.status == 'approved' %}
+                            {% if not booking.payment or booking.payment.payment_status != 'completed' %}
+                                <a href="{% url 'make_payment' booking.pk %}" class="btn btn-gold btn-sm">Make Payment</a>
+                            {% endif %}
+                        {% endif %}
+                        {% if booking.status in 'pending,approved' %}
+                            <a href="{% url 'cancel_booking' booking.pk %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Cancel this booking?')">Cancel Booking</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'bookings/base.html' %}
+{% block title %}My Profile — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Guest Portal</p>
+        <h1>My Profile</h1>
+        <div class="gold-divider"></div>
+        <p>View and update your personal information</p>
+    </div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4">
+                <div style="background:white;padding:2rem;border-top:3px solid var(--gold);" class="text-center">
+                    {% if guest.profile_picture %}
+                        <img src="{{ guest.profile_picture.url }}" class="avatar-img mb-3" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold);">
+                    {% else %}
+                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; border-radius: 50%; background: var(--cream); border: 3px solid var(--gold); color: var(--gold); font-size: 4rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    {% endif %}
+                    <h4>{{ guest.user.get_full_name }}</h4>
+                    <p style="font-size:0.85rem;color:var(--text-muted);">@{{ guest.user.username }}</p>
+                    <hr>
+                    <div class="text-start" style="font-size:0.85rem;">
+                        <p class="mb-2"><small class="text-muted">Registered</small><br><strong>{{ guest.created_at|date:"M d, Y" }}</strong></p>
+                        <p class="mb-2"><small class="text-muted">National ID</small><br><strong>{{ guest.national_id }}</strong></p>
+                        <p class="mb-0"><small class="text-muted">Phone Number</small><br><strong>{{ guest.phone_number }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div style="background:white;padding:2rem;border-top:3px solid var(--gold);">
+                    <h4 style="font-size:1.5rem;margin-bottom:1.5rem;">Update Information</h4>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <h5 class="text-secondary" style="font-size:1rem;margin-top:1rem;margin-bottom:1rem;border-bottom:1px solid #eee;padding-bottom:0.3rem;">Account Details</h5>
+                        {% for field in u_form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ field.errors.0 }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <h5 class="text-secondary" style="font-size:1rem;margin-top:1.5rem;margin-bottom:1rem;border-bottom:1px solid #eee;padding-bottom:0.3rem;">Guest Profile Details</h5>
+                        {% for field in p_form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}<p class="text-danger" style="font-size:0.75rem;">{{ field.errors.0 }}</p>{% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <button type="submit" class="btn btn-gold w-100 py-2 mt-3">Save Profile Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

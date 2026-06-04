@@ -1,0 +1,48 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Room Schedule — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><p class="section-subtitle">Administration</p><h1>Room Schedule & Availability</h1><div class="gold-divider"></div><p>Active and upcoming reservations as of {{ today }}</p></div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <h5 style="font-size:1.3rem;margin-bottom:1rem;">Active & Upcoming Bookings</h5>
+        <div style="background:white;overflow:hidden;margin-bottom:2rem;">
+            <table class="table tales-table mb-0">
+                <thead><tr><th>Booking #</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Nights</th><th>Status</th><th>Amount</th></tr></thead>
+                <tbody>
+                    {% for b in active_bookings %}
+                    <tr>
+                        <td>#{{ b.pk }}</td>
+                        <td>{{ b.guest.user.get_full_name }}<br><small class="text-muted">{{ b.guest.phone_number }}</small></td>
+                        <td>{{ b.room.room_number }}<br><small class="text-muted">{{ b.room.category.name }}</small></td>
+                        <td>{% if b.check_in_date == today %}<strong style="color:#198754;">TODAY</strong>{% else %}{{ b.check_in_date }}{% endif %}</td>
+                        <td>{{ b.check_out_date }}</td>
+                        <td>{{ b.get_num_nights }}</td>
+                        <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                        <td>UGX {{ b.total_amount|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-5 text-muted">No active or upcoming bookings.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <h5 style="font-size:1.3rem;margin-bottom:1rem;">All Rooms — Current Status</h5>
+        <div class="row g-3">
+            {% for room in rooms %}
+            <div class="col-lg-3 col-sm-4">
+                <div style="background:white;padding:1rem;border-left:4px solid {% if room.is_available %}#198754{% else %}#DC3545{% endif %};">
+                    <strong>Room {{ room.room_number }}</strong>
+                    <p style="font-size:0.75rem;color:var(--text-muted);margin:0.2rem 0;">{{ room.category.name }} | Floor {{ room.floor }}</p>
+                    <span style="font-size:0.75rem;font-weight:600;color:{% if room.is_available %}#198754{% else %}#DC3545{% endif %};">
+                        {% if room.is_available %}✓ Available{% else %}✗ Unavailable{% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-gold mt-4">← Back to Dashboard</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Admin Dashboard — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Management Panel</p>
+        <h1>Admin Dashboard</h1>
+        <div class="gold-divider"></div>
+    </div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <!-- Stats -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-2 col-sm-4"><div class="stat-card"><div class="number">{{ total_bookings }}</div><div class="label">Total Bookings</div></div></div>
+            <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#FFC107;"><div class="number">{{ pending_bookings }}</div><div class="label">Pending</div></div></div>
+            <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#198754;"><div class="number">{{ approved_bookings }}</div><div class="label">Approved</div></div></div>
+            <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#0D6EFD;"><div class="number">{{ total_guests }}</div><div class="label">Guests</div></div></div>
+            <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#6F42C1;"><div class="number">{{ available_rooms }}/{{ total_rooms }}</div><div class="label">Rooms Available</div></div></div>
+            <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#DC3545;"><div class="number">{{ unread_messages }}</div><div class="label">New Messages</div></div></div>
+        </div>
+        <!-- Quick Nav -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4"><a href="{% url 'admin_bookings' %}" class="btn btn-gold w-100 py-2"><i class="bi bi-calendar-check me-2"></i>Manage Bookings</a></div>
+            <div class="col-sm-4"><a href="{% url 'admin_guests' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-people me-2"></i>Manage Guests</a></div>
+            <div class="col-sm-3"><a href="{% url 'admin_rooms' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-building me-2"></i>Manage Rooms</a></div>
+            <div class="col-sm-3"><a href="{% url 'admin_schedule' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-calendar3 me-2"></i>Room Schedule</a></div>
+            <div class="col-sm-3"><a href="{% url 'admin_messages' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-envelope me-2"></i>Messages {% if unread_messages %}<span class="badge bg-danger">{{ unread_messages }}</span>{% endif %}</a></div>
+            <div class="col-sm-3"><a href="/admin/" class="btn btn-outline-secondary w-100 py-2"><i class="bi bi-gear me-2"></i>Django Admin</a></div>
+        </div>
+        <!-- Recent Bookings -->
+        <h5 style="font-size:1.3rem;margin-bottom:1rem;">Recent Bookings</h5>
+        <div style="background:white;overflow:hidden;">
+            <table class="table tales-table mb-0">
+                <thead><tr><th>#</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for b in recent_bookings %}
+                    <tr>
+                        <td>{{ b.pk }}</td>
+                        <td>{{ b.guest.user.get_full_name }}</td>
+                        <td>{{ b.room.room_number }}</td>
+                        <td>{{ b.check_in_date }}</td>
+                        <td>{{ b.check_out_date }}</td>
+                        <td>UGX {{ b.total_amount|floatformat:0 }}</td>
+                        <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                        <td>
+                            {% if b.status == 'pending' %}
+                            <form method="post" action="{% url 'admin_update_booking' b.pk %}" class="d-inline">
+                                {% csrf_token %}<input type="hidden" name="action" value="approve">
+                                <button class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <form method="post" action="{% url 'admin_update_booking' b.pk %}" class="d-inline">
+                                {% csrf_token %}<input type="hidden" name="action" value="cancel">
+                                <button class="btn btn-sm btn-danger">Cancel</button>
+                            </form>
+                            {% elif b.status == 'approved' %}
+                            <form method="post" action="{% url 'admin_update_booking' b.pk %}" class="d-inline">
+                                {% csrf_token %}<input type="hidden" name="action" value="complete">
+                                <button class="btn btn-sm btn-primary">Complete</button>
+                            </form>
+                            {% else %}<span class="text-muted" style="font-size:0.75rem;">{{ b.get_status_display }}</span>{% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No bookings yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

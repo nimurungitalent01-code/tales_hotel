@@ -1,0 +1,58 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Contact Us — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Get in Touch</p>
+        <h1>Contact Us</h1>
+        <div class="gold-divider"></div>
+        <p>We'd love to hear from you</p>
+    </div>
+</div>
+<section style="padding:4rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <h4 style="font-size:1.8rem;">Tales Hotel</h4>
+                <div class="gold-divider"></div>
+                <p style="color:var(--text-muted);margin-top:1rem;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;">Where every guest is family, and every stay is a story worth telling.</p>
+                <div class="mt-4">
+                    <div class="d-flex mb-3"><i class="bi bi-geo-alt me-3" style="color:var(--gold);font-size:1.3rem;"></i><div><strong style="font-size:0.85rem;">Address</strong><p style="font-size:0.82rem;color:var(--text-muted);margin:0;">Plot 14, Kampala Road<br>Kampala, Uganda</p></div></div>
+                    <div class="d-flex mb-3"><i class="bi bi-telephone me-3" style="color:var(--gold);font-size:1.3rem;"></i><div><strong style="font-size:0.85rem;">Phone</strong><p style="font-size:0.82rem;color:var(--text-muted);margin:0;">+256 700 000 000</p></div></div>
+                    <div class="d-flex mb-3"><i class="bi bi-envelope me-3" style="color:var(--gold);font-size:1.3rem;"></i><div><strong style="font-size:0.85rem;">Email</strong><p style="font-size:0.82rem;color:var(--text-muted);margin:0;">info@taleshotel.com</p></div></div>
+                    <div class="d-flex"><i class="bi bi-clock me-3" style="color:var(--gold);font-size:1.3rem;"></i><div><strong style="font-size:0.85rem;">Reception Hours</strong><p style="font-size:0.82rem;color:var(--text-muted);margin:0;">24 hours, 7 days a week</p></div></div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div style="background:white;padding:2.5rem;border-top:4px solid var(--gold);">
+                    <h4 style="font-size:1.5rem;margin-bottom:1.5rem;">Send Us a Message</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Subject</label>
+                                {{ form.subject }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Message</label>
+                                {{ form.message }}
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-gold px-5 py-2">Send Message</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

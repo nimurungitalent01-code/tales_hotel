@@ -1,0 +1,48 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Make Payment — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Secure Payment</p>
+        <h1>Complete Your Booking</h1>
+        <div class="gold-divider"></div>
+    </div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-4">
+                <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);">
+                    <h5>Booking Summary</h5>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2"><span style="font-size:0.82rem;">Room</span><strong>{{ booking.room.room_number }}</strong></div>
+                    <div class="d-flex justify-content-between mb-2"><span style="font-size:0.82rem;">Check-in</span><strong>{{ booking.check_in_date }}</strong></div>
+                    <div class="d-flex justify-content-between mb-2"><span style="font-size:0.82rem;">Check-out</span><strong>{{ booking.check_out_date }}</strong></div>
+                    <div class="d-flex justify-content-between mb-2"><span style="font-size:0.82rem;">Nights</span><strong>{{ booking.get_num_nights }}</strong></div>
+                    <hr>
+                    <div class="d-flex justify-content-between"><span>Total</span><strong style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--gold);">UGX {{ booking.total_amount|floatformat:0 }}</strong></div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div style="background:white;padding:2rem;border-top:3px solid var(--gold);">
+                    <h4>Payment Details</h4>
+                    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;">All transactions are secure and encrypted.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <div style="background:var(--cream);padding:1rem;margin-bottom:1.5rem;border-left:3px solid var(--gold);">
+                            <p style="font-size:0.8rem;margin:0;"><strong>Amount to pay: UGX {{ booking.total_amount|floatformat:0 }}</strong></p>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100 py-2"><i class="bi bi-lock me-2"></i>Confirm Payment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

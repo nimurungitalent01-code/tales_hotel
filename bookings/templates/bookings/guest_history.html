@@ -1,0 +1,48 @@
+{% extends 'bookings/base.html' %}
+{% block title %}My Stay History — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="section-subtitle">Guest Profile</p>
+        <h1>My Stay History</h1>
+        <div class="gold-divider"></div>
+    </div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <h4 style="font-size:1.5rem;margin-bottom:1.5rem;">Completed Stays</h4>
+        <div style="background:white;overflow:hidden;">
+            <table class="table tales-table mb-0">
+                <thead><tr><th>Booking #</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Nights</th><th>Amount</th></tr></thead>
+                <tbody>
+                    {% for b in completed_bookings %}
+                    <tr>
+                        <td>#{{ b.pk }}</td>
+                        <td>{{ b.room.room_number }} ({{ b.room.category.name }})</td>
+                        <td>{{ b.check_in_date }}</td>
+                        <td>{{ b.check_out_date }}</td>
+                        <td>{{ b.get_num_nights }}</td>
+                        <td>UGX {{ b.total_amount|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No completed stays yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if history %}
+        <h4 style="font-size:1.5rem;margin:2rem 0 1rem;">Staff Notes & Records</h4>
+        {% for h in history %}
+        <div style="background:white;padding:1.2rem;margin-bottom:0.8rem;border-left:3px solid var(--gold);">
+            <div class="d-flex justify-content-between">
+                <small class="text-muted">{{ h.recorded_at|date:"M d, Y" }} {% if h.recorded_by %}— by {{ h.recorded_by.get_full_name }}{% endif %}</small>
+                {% if h.booking %}<small class="text-muted">Booking #{{ h.booking.pk }}</small>{% endif %}
+            </div>
+            <p class="mt-1 mb-0">{{ h.notes }}</p>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-gold mt-3">Back to Dashboard</a>
+    </div>
+</section>
+{% endblock %}

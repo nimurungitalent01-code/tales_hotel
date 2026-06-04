@@ -1,0 +1,87 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Guest {{ guest.user.get_full_name }} — Tales Hotel{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="container"><p class="section-subtitle">Guest Profile</p><h1>{{ guest.user.get_full_name }}</h1><div class="gold-divider"></div></div>
+</div>
+<section style="padding:3rem 0;background:var(--cream);">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);" class="text-center">
+                    {% if guest.profile_picture %}
+                        <img src="{{ guest.profile_picture.url }}" class="avatar-img mb-3 shadow-sm" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold);">
+                    {% else %}
+                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; border-radius: 50%; background: var(--cream); border: 2px solid var(--gold); color: var(--gold); font-size: 3rem;">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    {% endif %}
+                    <h5 class="text-start mt-2">Profile Information</h5><hr>
+                    <div class="text-start">
+                        <p class="mb-2"><small class="text-muted">Full Name</small><br><strong>{{ guest.user.get_full_name }}</strong></p>
+                    <p><small class="text-muted">Username</small><br><strong>{{ guest.user.username }}</strong></p>
+                    <p><small class="text-muted">Email</small><br><strong>{{ guest.user.email }}</strong></p>
+                    <p><small class="text-muted">Phone</small><br><strong>{{ guest.phone_number }}</strong></p>
+                    <p><small class="text-muted">National ID</small><br><strong>{{ guest.national_id }}</strong></p>
+                    {% if guest.date_of_birth %}<p><small class="text-muted">Date of Birth</small><br><strong>{{ guest.date_of_birth }}</strong></p>{% endif %}
+                    <p><small class="text-muted">Registered</small><br><strong>{{ guest.created_at|date:"M d, Y" }}</strong></p>
+                    </div>
+                </div>
+                <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);margin-top:1rem;">
+                    <h5>Add History Note</h5><hr>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label class="form-label">Related Booking (Optional)</label>
+                            <select name="booking_id" class="form-control form-select">
+                                <option value="">— None —</option>
+                                {% for b in bookings %}<option value="{{ b.pk }}">Booking #{{ b.pk }} ({{ b.room.room_number }})</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Note</label>
+                            <textarea name="note" class="form-control" rows="3" placeholder="Enter note..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">Save Note</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h5 style="font-size:1.3rem;margin-bottom:1rem;">Booking History</h5>
+                <div style="background:white;overflow:hidden;margin-bottom:2rem;">
+                    <table class="table tales-table mb-0">
+                        <thead><tr><th>#</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Status</th><th>Amount</th></tr></thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr>
+                                <td>{{ b.pk }}</td>
+                                <td>{{ b.room.room_number }} ({{ b.room.category.name }})</td>
+                                <td>{{ b.check_in_date }}</td>
+                                <td>{{ b.check_out_date }}</td>
+                                <td><span class="badge badge-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                                <td>UGX {{ b.total_amount|floatformat:0 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center py-3 text-muted">No bookings.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <h5 style="font-size:1.3rem;margin-bottom:1rem;">Guest Stay Notes</h5>
+                {% for h in history %}
+                <div style="background:white;padding:1rem;margin-bottom:0.8rem;border-left:3px solid var(--gold);">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{ h.recorded_at|date:"M d, Y H:i" }} {% if h.recorded_by %}— {{ h.recorded_by.get_full_name }}{% endif %}</small>
+                        {% if h.booking %}<small class="text-muted">Booking #{{ h.booking.pk }}</small>{% endif %}
+                    </div>
+                    <p class="mt-1 mb-0">{{ h.notes }}</p>
+                </div>
+                {% empty %}
+                <p class="text-muted" style="font-size:0.85rem;">No notes recorded for this guest.</p>
+                {% endfor %}
+                <a href="{% url 'admin_guests' %}" class="btn btn-outline-gold mt-3">← Back to Guests</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
