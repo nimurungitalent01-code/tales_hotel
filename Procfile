@@ -1,0 +1,1 @@
+web: gunicorn tales_hotel.wsgi:application
