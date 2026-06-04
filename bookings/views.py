@@ -10,8 +10,7 @@ import datetime
 from .models import (GuestProfile, Room, RoomCategory, Booking,
                      Payment, GuestHistory, ContactFeedback)
 from .forms import (GuestRegistrationForm, BookingForm, PaymentForm,
-                    ContactFeedbackForm, RoomSearchForm, UserUpdateForm,
-                    GuestProfileForm)
+                    ContactFeedbackForm, RoomSearchForm)
 
 
 def is_admin(user):
@@ -146,10 +145,6 @@ def dashboard(request):
 @login_required
 def book_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    if not room.is_available:
-        messages.error(request, f"Room {room.room_number} is temporarily out of service and cannot be booked.")
-        return redirect('room_list')
-
     try:
         guest = request.user.guest_profile
     except GuestProfile.DoesNotExist:
@@ -157,7 +152,7 @@ def book_room(request, room_id):
         return redirect('home')
 
     if request.method == 'POST':
-        form = BookingForm(request.POST, room=room)
+        form = BookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
             booking.guest = guest
@@ -167,7 +162,7 @@ def book_room(request, room_id):
             messages.success(request, f"Booking request submitted for Room {room.room_number}! Awaiting approval.")
             return redirect('booking_detail', booking_id=booking.pk)
     else:
-        form = BookingForm(room=room)
+        form = BookingForm()
     return render(request, 'bookings/book_room.html', {'form': form, 'room': room})
 
 
@@ -192,9 +187,6 @@ def cancel_booking(request, booking_id):
     except GuestProfile.DoesNotExist:
         return redirect('home')
     if booking.status in ['pending', 'approved']:
-        if hasattr(booking, 'payment') and booking.payment.payment_status == 'completed':
-            messages.error(request, "Paid bookings cannot be cancelled directly. Please contact support.")
-            return redirect('booking_detail', booking_id=booking.pk)
         booking.status = 'cancelled'
         booking.save()
         messages.success(request, "Your booking has been cancelled.")
@@ -210,10 +202,6 @@ def make_payment(request, booking_id):
         booking = get_object_or_404(Booking, pk=booking_id, guest=guest)
     except GuestProfile.DoesNotExist:
         return redirect('home')
-
-    if booking.status != 'approved':
-        messages.error(request, "You can only make a payment for approved bookings.")
-        return redirect('booking_detail', booking_id=booking.pk)
 
     if hasattr(booking, 'payment') and booking.payment.payment_status == 'completed':
         messages.info(request, "This booking has already been paid.")
@@ -294,18 +282,8 @@ def admin_update_booking(request, booking_id):
     booking = get_object_or_404(Booking, pk=booking_id)
     action = request.POST.get('action')
     if action == 'approve':
-        # Check for overlapping approved bookings
-        overlapping_approved = Booking.objects.filter(
-            room=booking.room,
-            status='approved',
-            check_in_date__lt=booking.check_out_date,
-            check_out_date__gt=booking.check_in_date
-        ).exclude(pk=booking.pk)
-        if overlapping_approved.exists():
-            messages.error(request, f"Cannot approve Booking #{booking.pk} because Room {booking.room.room_number} is already booked/approved for those dates.")
-        else:
-            booking.status = 'approved'
-            messages.success(request, f"Booking #{booking.pk} approved.")
+        booking.status = 'approved'
+        messages.success(request, f"Booking #{booking.pk} approved.")
     elif action == 'cancel':
         booking.status = 'cancelled'
         messages.warning(request, f"Booking #{booking.pk} cancelled.")
@@ -377,7 +355,7 @@ def admin_messages(request):
 @login_required
 @user_passes_test(is_admin)
 def admin_schedule(request):
-    """Room schedule / availability view"""
+    """Room schedule / availability view (Doctor Schedule equivalent)"""
     today = datetime.date.today()
     week_later = today + datetime.timedelta(days=14)
     rooms = Room.objects.select_related('category').order_by('floor', 'room_number')
@@ -389,31 +367,4 @@ def admin_schedule(request):
         'rooms': rooms,
         'active_bookings': active_bookings,
         'today': today,
-    })
-
-
-@login_required
-def profile(request):
-    try:
-        guest = request.user.guest_profile
-    except GuestProfile.DoesNotExist:
-        messages.error(request, "Guest profile not found.")
-        return redirect('home')
-
-    if request.method == 'POST':
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = GuestProfileForm(request.POST, request.FILES, instance=guest)
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
-            messages.success(request, "Your profile has been updated successfully!")
-            return redirect('profile')
-    else:
-        u_form = UserUpdateForm(instance=request.user)
-        p_form = GuestProfileForm(instance=guest)
-
-    return render(request, 'bookings/profile.html', {
-        'u_form': u_form,
-        'p_form': p_form,
-        'guest': guest,
     })

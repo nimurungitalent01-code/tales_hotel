@@ -8,24 +8,15 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);" class="text-center">
-                    {% if guest.profile_picture %}
-                        <img src="{{ guest.profile_picture.url }}" class="avatar-img mb-3 shadow-sm" alt="Profile Picture" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold);">
-                    {% else %}
-                        <div class="mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; border-radius: 50%; background: var(--cream); border: 2px solid var(--gold); color: var(--gold); font-size: 3rem;">
-                            <i class="bi bi-person"></i>
-                        </div>
-                    {% endif %}
-                    <h5 class="text-start mt-2">Profile Information</h5><hr>
-                    <div class="text-start">
-                        <p class="mb-2"><small class="text-muted">Full Name</small><br><strong>{{ guest.user.get_full_name }}</strong></p>
+                <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);">
+                    <h5>Profile Information</h5><hr>
+                    <p><small class="text-muted">Full Name</small><br><strong>{{ guest.user.get_full_name }}</strong></p>
                     <p><small class="text-muted">Username</small><br><strong>{{ guest.user.username }}</strong></p>
                     <p><small class="text-muted">Email</small><br><strong>{{ guest.user.email }}</strong></p>
                     <p><small class="text-muted">Phone</small><br><strong>{{ guest.phone_number }}</strong></p>
                     <p><small class="text-muted">National ID</small><br><strong>{{ guest.national_id }}</strong></p>
                     {% if guest.date_of_birth %}<p><small class="text-muted">Date of Birth</small><br><strong>{{ guest.date_of_birth }}</strong></p>{% endif %}
                     <p><small class="text-muted">Registered</small><br><strong>{{ guest.created_at|date:"M d, Y" }}</strong></p>
-                    </div>
                 </div>
                 <div style="background:white;padding:1.5rem;border-top:3px solid var(--gold);margin-top:1rem;">
                     <h5>Add History Note</h5><hr>
@@ -67,7 +58,7 @@
                         </tbody>
                     </table>
                 </div>
-                <h5 style="font-size:1.3rem;margin-bottom:1rem;">Guest Stay Notes</h5>
+                <h5 style="font-size:1.3rem;margin-bottom:1rem;">Medical / Stay Notes</h5>
                 {% for h in history %}
                 <div style="background:white;padding:1rem;margin-bottom:0.8rem;border-left:3px solid var(--gold);">
                     <div class="d-flex justify-content-between">
