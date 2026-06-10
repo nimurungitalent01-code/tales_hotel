@@ -25,9 +25,13 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'admin_toggle_room' room.pk %}" class="btn btn-sm {% if room.is_available %}btn-outline-danger{% else %}btn-outline-success{% endif %}">
-                                {% if room.is_available %}Mark Unavailable{% else %}Mark Available{% endif %}
-                            </a>
+                            <form method="post" action="{% url 'admin_toggle_room' room.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm {% if room.is_available %}btn-outline-danger{% else %}btn-outline-success{% endif %}"
+                                    onclick="return confirm('Toggle availability for Room {{ room.room_number }}?')">
+                                    {% if room.is_available %}Mark Unavailable{% else %}Mark Available{% endif %}
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% empty %}

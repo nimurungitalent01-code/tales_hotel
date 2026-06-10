@@ -7,7 +7,7 @@ SECRET_KEY = os.environ.get(
     "SECRET_KEY",
     "django-insecure-luxurymeetscomfort"
 )
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     '.onrender.com',

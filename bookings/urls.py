@@ -20,6 +20,7 @@ urlpatterns = [
     path('bookings/<int:booking_id>/cancel/', views.cancel_booking, name='cancel_booking'),
     path('bookings/<int:booking_id>/pay/', views.make_payment, name='make_payment'),
     path('my-history/', views.guest_history, name='guest_history'),
+    path('profile/', views.profile, name='profile'),
 
     # Admin
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),

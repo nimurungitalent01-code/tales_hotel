@@ -95,6 +95,28 @@ class ContactFeedbackForm(forms.ModelForm):
         }
 
 
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+
+class GuestProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = GuestProfile
+        fields = ['phone_number', 'date_of_birth', 'profile_picture']
+        widgets = {
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+
 class RoomSearchForm(forms.Form):
     check_in_date = forms.DateField(required=False,
         widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'placeholder': 'Check-in'}))

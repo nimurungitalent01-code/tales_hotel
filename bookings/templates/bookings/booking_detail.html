@@ -46,7 +46,7 @@
                                 <a href="{% url 'make_payment' booking.pk %}" class="btn btn-gold btn-sm">Make Payment</a>
                             {% endif %}
                         {% endif %}
-                        {% if booking.status in 'pending,approved' %}
+                        {% if booking.status == 'pending' or booking.status == 'approved' %}
                             <a href="{% url 'cancel_booking' booking.pk %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Cancel this booking?')">Cancel Booking</a>
                         {% endif %}
                     </div>

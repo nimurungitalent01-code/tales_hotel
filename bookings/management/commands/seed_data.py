@@ -44,18 +44,36 @@ class Command(BaseCommand):
 
         # ---------------- ROOMS ----------------
         rooms = [
-            ('101', 'Standard Room', 1, 150000),
-            ('102', 'Standard Room', 1, 155000),
-            ('201', 'Deluxe Room', 2, 250000),
-            ('202', 'Deluxe Room', 2, 260000),
-            ('301', 'Executive Suite', 3, 400000),
-            ('302', 'Executive Suite', 3, 420000),
-            ('401', 'Presidential Suite', 4, 800000),
-            ('103', 'Family Room', 1, 300000),
-            ('104', 'Family Room', 1, 310000),
+            ('101', 'Standard Room', 1, 150000, 'rooms/room101.jpg',
+             'A cozy Standard Room with a queen-size bed, modern amenities, and a warm ambiance perfect for couples or solo travellers.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, Daily Housekeeping'),
+            ('102', 'Standard Room', 1, 155000, 'rooms/room102.jpg',
+             'Comfortable Standard Room featuring a plush queen bed, flat-screen TV, and elegant decor for a restful stay.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, Daily Housekeeping'),
+            ('201', 'Deluxe Room',   2, 250000, 'rooms/room201.jpg',
+             'Spacious Deluxe Room with panoramic city views, a king-size bed, and premium furnishings for a truly elevated experience.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, City View, Room Service, Bathrobe'),
+            ('202', 'Deluxe Room',   2, 260000, 'rooms/room202.jpg',
+             'Elegant Deluxe Room with city vistas, a luxurious king bed, marble bathroom, and curated in-room dining options.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, City View, Room Service, Bathrobe, Jacuzzi'),
+            ('301', 'Executive Suite', 3, 400000, 'rooms/room301.jpg',
+             'Our Executive Suite combines a generous living lounge with a king bedroom, butler service, and breathtaking views.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, City View, Butler Service, Private Lounge, Jacuzzi, Room Service'),
+            ('302', 'Executive Suite', 3, 420000, 'rooms/room302.jpg',
+             'Refined Executive Suite featuring a private lounge, king bed, and exclusive access to our executive floor amenities.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, City View, Butler Service, Private Lounge, Room Service'),
+            ('401', 'Presidential Suite', 4, 800000, 'rooms/room401.jpg',
+             'The pinnacle of luxury — our Presidential Suite offers a grand living room, private dining, butler service, and unparalleled comfort.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Full Bar, Panoramic View, Butler Service, Private Dining, Jacuzzi, Gym Access, Concierge'),
+            ('103', 'Family Room',   1, 300000, 'rooms/room103.jpg',
+             'Spacious Family Room with two queen beds, extra storage, and family-friendly amenities to keep every member comfortable.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, Extra Beds, Daily Housekeeping, Child Amenities'),
+            ('104', 'Family Room',   1, 310000, 'rooms/room104.jpg',
+             'Welcoming Family Room designed for four, with two queen beds, a play area corner, and ample natural light.',
+             'Free WiFi, Air Conditioning, Flat-screen TV, Mini Bar, Extra Beds, Daily Housekeeping, Child Amenities, Play Area'),
         ]
 
-        for number, cat_name, floor, price in rooms:
+        for number, cat_name, floor, price, image_path, desc, amenities in rooms:
             Room.objects.get_or_create(
                 room_number=number,
                 defaults={
@@ -63,6 +81,9 @@ class Command(BaseCommand):
                     'floor': floor,
                     'price_per_night': price,
                     'is_available': True,
+                    'image': image_path,
+                    'description': desc,
+                    'amenities': amenities,
                 }
             )
 

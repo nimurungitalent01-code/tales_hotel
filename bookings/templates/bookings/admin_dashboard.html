@@ -20,13 +20,13 @@
             <div class="col-lg-2 col-sm-4"><div class="stat-card" style="border-color:#DC3545;"><div class="number">{{ unread_messages }}</div><div class="label">New Messages</div></div></div>
         </div>
         <!-- Quick Nav -->
-        <div class="row g-3 mb-4">
-            <div class="col-sm-4"><a href="{% url 'admin_bookings' %}" class="btn btn-gold w-100 py-2"><i class="bi bi-calendar-check me-2"></i>Manage Bookings</a></div>
-            <div class="col-sm-4"><a href="{% url 'admin_guests' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-people me-2"></i>Manage Guests</a></div>
-            <div class="col-sm-3"><a href="{% url 'admin_rooms' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-building me-2"></i>Manage Rooms</a></div>
-            <div class="col-sm-3"><a href="{% url 'admin_schedule' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-calendar3 me-2"></i>Room Schedule</a></div>
-            <div class="col-sm-3"><a href="{% url 'admin_messages' %}" class="btn btn-outline-gold w-100 py-2"><i class="bi bi-envelope me-2"></i>Messages {% if unread_messages %}<span class="badge bg-danger">{{ unread_messages }}</span>{% endif %}</a></div>
-            <div class="col-sm-3"><a href="/admin/" class="btn btn-outline-secondary w-100 py-2"><i class="bi bi-gear me-2"></i>Django Admin</a></div>
+        <div class="d-flex gap-2 mb-4 flex-wrap">
+            <a href="{% url 'admin_bookings' %}" class="btn btn-gold py-2 flex-fill"><i class="bi bi-calendar-check me-2"></i>Manage Bookings</a>
+            <a href="{% url 'admin_guests' %}" class="btn btn-outline-gold py-2 flex-fill"><i class="bi bi-people me-2"></i>Manage Guests</a>
+            <a href="{% url 'admin_rooms' %}" class="btn btn-outline-gold py-2 flex-fill"><i class="bi bi-building me-2"></i>Manage Rooms</a>
+            <a href="{% url 'admin_schedule' %}" class="btn btn-outline-gold py-2 flex-fill"><i class="bi bi-calendar3 me-2"></i>Room Schedule</a>
+            <a href="{% url 'admin_messages' %}" class="btn btn-outline-gold py-2 flex-fill"><i class="bi bi-envelope me-2"></i>Messages {% if unread_messages %}<span class="badge bg-danger">{{ unread_messages }}</span>{% endif %}</a>
+            <a href="/admin/" class="btn btn-outline-secondary py-2 flex-fill"><i class="bi bi-gear me-2"></i>Django Admin</a>
         </div>
         <!-- Recent Bookings -->
         <h5 style="font-size:1.3rem;margin-bottom:1rem;">Recent Bookings</h5>

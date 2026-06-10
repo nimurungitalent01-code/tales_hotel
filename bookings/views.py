@@ -10,7 +10,8 @@ import datetime
 from .models import (GuestProfile, Room, RoomCategory, Booking,
                      Payment, GuestHistory, ContactFeedback)
 from .forms import (GuestRegistrationForm, BookingForm, PaymentForm,
-                    ContactFeedbackForm, RoomSearchForm)
+                    ContactFeedbackForm, RoomSearchForm,
+                    UserUpdateForm, GuestProfileUpdateForm)
 
 
 def is_admin(user):
@@ -237,6 +238,33 @@ def guest_history(request):
     })
 
 
+@login_required
+def profile(request):
+    try:
+        guest = request.user.guest_profile
+    except GuestProfile.DoesNotExist:
+        messages.error(request, "Guest profile not found.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = GuestProfileUpdateForm(request.POST, request.FILES, instance=guest)
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, "Your profile has been updated successfully.")
+            return redirect('profile')
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = GuestProfileUpdateForm(instance=guest)
+
+    return render(request, 'bookings/profile.html', {
+        'guest': guest,
+        'u_form': u_form,
+        'p_form': p_form,
+    })
+
+
 # ─── ADMIN VIEWS ────────────────────────────────────────────────────────────
 
 @login_required
@@ -334,10 +362,11 @@ def admin_rooms(request):
 @user_passes_test(is_admin)
 def admin_toggle_room(request, room_id):
     room = get_object_or_404(Room, pk=room_id)
-    room.is_available = not room.is_available
-    room.save()
-    status = "available" if room.is_available else "unavailable"
-    messages.success(request, f"Room {room.room_number} is now {status}.")
+    if request.method == 'POST':
+        room.is_available = not room.is_available
+        room.save()
+        status = "available" if room.is_available else "unavailable"
+        messages.success(request, f"Room {room.room_number} is now {status}.")
     return redirect('admin_rooms')
 
 
